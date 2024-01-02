@@ -1,6 +1,7 @@
 import { BarChart } from '@mui/x-charts'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 const Charts = () => {
     const today = moment()
@@ -229,7 +230,7 @@ const Charts = () => {
             <main>
                 <div className="container-fluid px-4">
                     <h1 className="mt-4">Charts</h1>
-                    <ol className="breadcrumb mb-4"><li className="breadcrumb-item"><a href="index.html">Dashboard</a></li><li className="breadcrumb-item active">Charts</li></ol>
+                    <ol className="breadcrumb mb-4"><li className="breadcrumb-item"><Link to={"/"} >Dashboard</Link></li><li className="breadcrumb-item active">Charts</li></ol>
     
                        
                         <div className="">
