@@ -34,7 +34,11 @@ const Charts = () => {
         setSelectedType(e.target.value);
     };
     const handleChangeCount = (e) => {
-    setSelectedCount(parseInt(e.target.value, 10));
+        let count = parseInt(e.target.value, 10)
+        if(count <= 0){
+            count = 1
+        }
+        setSelectedCount(count);
     };
     
     //bài đăng theo ngày 
@@ -43,19 +47,21 @@ const Charts = () => {
     }
     useEffect(()=>{
         const today = moment()
-        const daysAgo = today.startOf("day").subtract(selectedCount-1, "days")
+        
+       
+        console.log(selectedCount)
+        const daysAgo = today.startOf("day").subtract(selectedCount  -1, "days")
         const sinceDay = moment(daysAgo).format("YYYY-MM-DD")
-      
+        console.log(sinceDay,dateSort)
         fetch(`https://graph.facebook.com/${idPage}/posts?fields=created_time&since=${sinceDay}T00:00:00&until=${dateSort}T23:59:59&access_token=${accessToken}`)      
             .then(function(response){
                     return response.json()
             })
             .then(data => {
-                return data.data.map(post=>{
+                return data.data?.map(post=>{
                     return moment(post.created_time).format("DD-MM-YYYY")
                 }).sort()
             })
-            
             .then(date => {
                 return date?.reduce((acc, current) => {
                     let key = current;
@@ -129,9 +135,8 @@ const Charts = () => {
     }
     useEffect(()=>{
         const today = moment()
-        let yearsAgo = today.startOf("year").subtract(selectedCount-1, "years")
+        const yearsAgo = today.startOf("year").subtract(selectedCount - 1 , "years")
         const sinceYear = moment(yearsAgo).year()
-        
         fetch(`https://graph.facebook.com/${idPage}/posts?fields=created_time&since=${sinceYear}-01-01T00:00:00&until=${yearSort}-12-31T23:59:59&access_token=${accessToken}`)
             .then(function(response){
                 return response.json()
@@ -144,7 +149,7 @@ const Charts = () => {
             
             .then(date => {
             
-                return date.reduce((acc, current) => {
+                return date?.reduce((acc, current) => {
                     let key = current;
             
                     if (!acc.hasOwnProperty(key)) {
@@ -156,6 +161,7 @@ const Charts = () => {
                 }, {})
             })
             .then(post => {
+                console.log(post)
                 if(Object.keys(post).length === 0 || post === undefined || post === null){
                     setPostsYear([yearSort])
                     setPostsYearValue([0])

@@ -75,9 +75,9 @@ const Dashboard = () => {
                     if(dt.shares !== undefined){
                         total += dt.shares.count;
                     }
-                    
+
                 }
-                setToltalShares(total)
+                return setToltalShares(total)
             })
     },[])   
     //bài post
@@ -87,26 +87,14 @@ const Dashboard = () => {
                 return response.json()
             })
             .then(data => {
+                
                 return data.data?.map(post=>{
                     return moment(post.created_time).format("DD-MM")
-                })
-            })
-            .then((date)=>{
-                let today = moment()
-                
-                let twentyEightDaysAgo = today.startOf("day").subtract(28, "days")
-              
-                const filteredArray = date.filter((date)=>{
-                    if(twentyEightDaysAgo.format("DD-MM") >= date){
-                        return date
-                    }    
-                })
-                return filteredArray.sort()
-
+                }).sort()
             })
             .then(date => {
                 console.log(date)
-                return date.reduce((acc, current) => {
+                return date?.reduce((acc, current) => {
                     let key = current;
             
                     if (!acc.hasOwnProperty(key)) {

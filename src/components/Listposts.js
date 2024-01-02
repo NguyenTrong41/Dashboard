@@ -9,7 +9,7 @@ const Listposts = () => {
     const [link, setLink] = useState()
     const accessToken = 'EAAaZATvkGLKQBO0WFjjWzZCUiP7ZAnPpplN3BBoZBPhzH4A1FjEMaMhyjzjk8x2E2MFm0UTZC0at4lYZC8ezKqPQQ8vqWsxljLFEnDS2U7ZCvmApL8kE8LMA5eoWdr3sLVknna6bqZBjvyW9bXj83aw9fxOIeg8egAWGZBZCZBb3edh3sruonbE21aW3MQgIcehZBTEZD'
     const idPage = '199179103271562'
-    //số người theo dõi
+    
     useEffect(()=>{
         fetch(`https://graph.facebook.com/${idPage}/posts?fields=id,admin_creator,message,likes.summary(total_count),comments.summary(total_count),shares,full_picture&access_token=${accessToken}`)
             .then(function(response){
