@@ -11940,3 +11940,19 @@ html body .m-t-10 {
   box-shadow: 0 6px 43px 0 rgba(0, 0, 0, 0.4);
 }
 
+.editModal {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ccc;
+  z-index: 999;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  left: 0;
+}
+.editModal__content {
+  padding: 20px;
+  background-color: #fff;
+}
