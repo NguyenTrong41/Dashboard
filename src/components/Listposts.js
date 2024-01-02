@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const Listposts = () => {
   const [posts, setPosts] = useState();
   const [message, setMessage] = useState();
   const [link, setLink] = useState();
-  const [linkUpdate, setLinkUpdate] = useState();
   const accessToken =
     "EAAaZATvkGLKQBO0WFjjWzZCUiP7ZAnPpplN3BBoZBPhzH4A1FjEMaMhyjzjk8x2E2MFm0UTZC0at4lYZC8ezKqPQQ8vqWsxljLFEnDS2U7ZCvmApL8kE8LMA5eoWdr3sLVknna6bqZBjvyW9bXj83aw9fxOIeg8egAWGZBZCZBb3edh3sruonbE21aW3MQgIcehZBTEZD";
   const idPage = "199179103271562";
@@ -23,49 +22,70 @@ const Listposts = () => {
   }, []);
 
   const [isShowEditModal, setShowEditModal] = useState(false);
+  const [postUpdate, setPostUpdate] = useState({
+    message: "",
+    id: "",
+  });
 
-  const EditModal = (props) => {
-    const [messageUpdate, setMessageUpdate] = useState(props.message);
+  const EditModal = () => {
+    console.log(1)
     return (
-      <div className="editModal">
-        <div className="editModal__content">
+      <div
+        className="editModal"
+        onClick={() => {
+          setShowEditModal(false);
+        }}
+      >
+        <div
+          className="editModal__content"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <p>Content</p>
           <input
             type="text"
-            value={messageUpdate}
-            onChange={(e) => setMessageUpdate(e.target.value)}
+            value={postUpdate.message}
+            autoFocus
+            onChange={(e) => {
+              // Cập nhật giá trị của postUpdate.message
+              setPostUpdate((prev) => {
+                return {
+                  ...prev,
+                  message: e.target.value,
+                };
+              });
+            }}
+            // onChange={(e) => {
+            //   // Cập nhật giá trị của postUpdate.message
+            //   setPostUpdate((prev) => {
+            //     return {
+            //       ...prev,
+            //       message: e.target.value,
+            //     };
+            //   });
+            // }}
           />
-        </div>
-        {/* <div className="editModal__content">
-          <input
-            type="text"
-            placeholder="Link hình ảnh hoặc video mới"
-            value={linkUpdate}
-            onChange={(e) => setLinkUpdate(e.target.value)}
-          />
-        </div> */}
+          
         <button
           onClick={() => {
-            // props.setShowEditModal(false);
-            updatePosts(props.id, messageUpdate);
+            setShowEditModal(false);
+            updatePosts(postUpdate.id, postUpdate.message);
+            // console.log("postUpdate.id, postUpdate.message: ", postUpdate.id, postUpdate.message)
           }}
         >
           Cập nhật
         </button>
+        </div>
       </div>
     );
-  };
+  }
 
   const renderPosts = () => {
     return posts?.map((post, index) => {
       return (
         <>
-          {isShowEditModal && (
-            <EditModal
-              id={post.id}
-              message={post.message}
-              setShowEditModal={setShowEditModal}
-            />
-          )}
+          {isShowEditModal && <EditModal />}
           <tr key={index}>
             <td>
               <Link
@@ -114,7 +134,14 @@ const Listposts = () => {
             <td style={{ textAlign: "center", margin: "auto" }}>
               <button
                 style={{ border: 1 }}
-                onClick={setShowEditModal(!isShowEditModal)}
+                onClick={() => {
+                  setPostUpdate({
+                    message: post.message,
+                    link: post.full_picture,
+                    id: post.id,
+                  });
+                  setShowEditModal(!isShowEditModal);
+                }}
               >
                 sửa
               </button>
@@ -122,7 +149,7 @@ const Listposts = () => {
             <td style={{ textAlign: "center", margin: "auto" }}>
               <button
                 style={{ border: 1 }}
-                onClick={() => updatePosts(post.id)}
+                onClick={() => deletePosts(post.id)}
               >
                 xoá
               </button>
@@ -161,22 +188,26 @@ const Listposts = () => {
       `https://graph.facebook.com/${id}?method=delete&access_token=${accessToken}`,
       { method: "DELETE" }
     ).then(() => {
-      console.log("xoá thành công");
-      window.location.reload();
-    });
-  };
+      console.log("xoá thành công")
+      window.location.reload()
+    })
+  }
   //sử bài viết
   const updatePosts = (id, messageUpdate) => {
-    fetch(`https://graph.facebook.com/v18.0/${id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        messageUpdate,
-      }),
-    });
-  };
+    
+      fetch(`https://graph.facebook.com/v18.0/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`
+        },
+        body: JSON.stringify({
+          message: messageUpdate,
+        }),
+      })
+    
+    window.location.reload();
+  }
 
   return (
     <>

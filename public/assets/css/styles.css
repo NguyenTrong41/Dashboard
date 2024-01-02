@@ -11945,7 +11945,7 @@ html body .m-t-10 {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #ccc;
+  background: rgba(128, 128, 128, 0.008);
   z-index: 999;
   width: 100%;
   height: 100vh;
@@ -11955,4 +11955,13 @@ html body .m-t-10 {
 .editModal__content {
   padding: 20px;
   background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+.editModal__content p {
+  margin: 0;
+}
+.editModal__content input{
+  
+  margin-bottom: 30px;
 }
