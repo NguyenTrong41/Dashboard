@@ -25,7 +25,7 @@ const Charts = () => {
     const [likesValue, setLikesValue] = useState([null])
     const [commentsValue, setCommentsValue] = useState([null])
     const [sharesValue, setSharesValue] = useState([null])
-
+    
 
     const accessToken = 'EAAaZATvkGLKQBO0WFjjWzZCUiP7ZAnPpplN3BBoZBPhzH4A1FjEMaMhyjzjk8x2E2MFm0UTZC0at4lYZC8ezKqPQQ8vqWsxljLFEnDS2U7ZCvmApL8kE8LMA5eoWdr3sLVknna6bqZBjvyW9bXj83aw9fxOIeg8egAWGZBZCZBb3edh3sruonbE21aW3MQgIcehZBTEZD'
     const idPage = '199179103271562'
@@ -43,21 +43,17 @@ const Charts = () => {
     
     //bài đăng theo ngày 
     const dateSortValue = (event)=>{    
-        setDateSort(moment(event.target.value).format("DD-MM-YYYY"))
+        setDateSort(moment(event.target.value).format("YYYY-MM-DD"))
     }
     useEffect(()=>{
-        const today = moment()
-        
-       
-        console.log(selectedCount)
-        const daysAgo = today.startOf("day").subtract(selectedCount  -1, "days")
+        const daysAgo = moment(dateSort).startOf("day").subtract(selectedCount  -1, "days")
         const sinceDay = moment(daysAgo).format("YYYY-MM-DD")
-        console.log(sinceDay,dateSort)
         fetch(`https://graph.facebook.com/${idPage}/posts?fields=created_time&since=${sinceDay}T00:00:00&until=${dateSort}T23:59:59&access_token=${accessToken}`)      
             .then(function(response){
                     return response.json()
             })
             .then(data => {
+                
                 return data.data?.map(post=>{
                     return moment(post.created_time).format("DD-MM-YYYY")
                 }).sort()
@@ -88,14 +84,11 @@ const Charts = () => {
     
    //bài đăng theo tháng
     const monthSortValue = (event)=>{    
-        setMonthSort((event.target.value))
+        setMonthSort(moment(event.target.value).format("YYYY-MM"))
     }
     useEffect(()=>{
-        const today = moment()
-        let monthsAgo = today.startOf("month").subtract(selectedCount-1, "months")
-        
+        let monthsAgo = moment(monthSort).startOf("year").subtract(selectedCount-1, "years")
         const sinceMonth = moment(monthsAgo).format("YYYY-MM")
-        
         fetch(`https://graph.facebook.com/${idPage}/posts?fields=created_time&since=${sinceMonth}-01T00:00:00&until=${monthSort}-31T23:59:59&access_token=${accessToken}`)
             .then(function(response){
                 return response.json()
@@ -131,12 +124,15 @@ const Charts = () => {
     },[monthSort, selectedCount])
     //bài đăng theo năm
     const yearSortValue = (event)=>{    
-        setYearSort((event.target.value))
+        setYearSort(moment(event.target.value).year())
     }
+    
     useEffect(()=>{
-        const today = moment()
-        const yearsAgo = today.startOf("year").subtract(selectedCount - 1 , "years")
+        
+        const yearsAgo = moment(yearSort, "YYYY").startOf("month").subtract(selectedCount-1, "months")
+        
         const sinceYear = moment(yearsAgo).year()
+        
         fetch(`https://graph.facebook.com/${idPage}/posts?fields=created_time&since=${sinceYear}-01-01T00:00:00&until=${yearSort}-12-31T23:59:59&access_token=${accessToken}`)
             .then(function(response){
                 return response.json()
@@ -161,7 +157,6 @@ const Charts = () => {
                 }, {})
             })
             .then(post => {
-                console.log(post)
                 if(Object.keys(post).length === 0 || post === undefined || post === null){
                     setPostsYear([yearSort])
                     setPostsYearValue([0])

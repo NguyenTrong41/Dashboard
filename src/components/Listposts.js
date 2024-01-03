@@ -1,45 +1,44 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useCallback, useEffect, useState } from "react" 
+import { Link } from "react-router-dom" 
 
 const Listposts = () => {
-  const [posts, setPosts] = useState();
-  const [message, setMessage] = useState();
-  const [link, setLink] = useState();
+  const [posts, setPosts] = useState() 
+  const [message, setMessage] = useState() 
+  const [link, setLink] = useState() 
   const accessToken =
-    "EAAaZATvkGLKQBO0WFjjWzZCUiP7ZAnPpplN3BBoZBPhzH4A1FjEMaMhyjzjk8x2E2MFm0UTZC0at4lYZC8ezKqPQQ8vqWsxljLFEnDS2U7ZCvmApL8kE8LMA5eoWdr3sLVknna6bqZBjvyW9bXj83aw9fxOIeg8egAWGZBZCZBb3edh3sruonbE21aW3MQgIcehZBTEZD";
-  const idPage = "199179103271562";
+    "EAAaZATvkGLKQBO0WFjjWzZCUiP7ZAnPpplN3BBoZBPhzH4A1FjEMaMhyjzjk8x2E2MFm0UTZC0at4lYZC8ezKqPQQ8vqWsxljLFEnDS2U7ZCvmApL8kE8LMA5eoWdr3sLVknna6bqZBjvyW9bXj83aw9fxOIeg8egAWGZBZCZBb3edh3sruonbE21aW3MQgIcehZBTEZD" 
+  const idPage = "199179103271562" 
 
   useEffect(() => {
     fetch(
       `https://graph.facebook.com/${idPage}/posts?fields=id,admin_creator,message,likes.summary(total_count),comments.summary(total_count),shares,full_picture&access_token=${accessToken}`
     )
       .then(function (response) {
-        return response.json();
+        return response.json() 
       })
       .then((data) => {
-        setPosts(data.data);
-      });
-  }, []);
-
-  const [isShowEditModal, setShowEditModal] = useState(false);
+        setPosts(data.data) 
+      }) 
+  }, []) 
+  const [isShowEditModal, setShowEditModal] = useState(false) 
   const [postUpdate, setPostUpdate] = useState({
     message: "",
     id: "",
-  });
+  }) 
 
   const EditModal = () => {
-    console.log(1)
+    console.log("re-render")
     return (
       <div
         className="editModal"
         onClick={() => {
-          setShowEditModal(false);
+          setShowEditModal(false) 
         }}
       >
         <div
           className="editModal__content"
           onClick={(e) => {
-            e.stopPropagation();
+            e.stopPropagation()
           }}
         >
           <p>Content</p>
@@ -53,35 +52,26 @@ const Listposts = () => {
                 return {
                   ...prev,
                   message: e.target.value,
-                };
-              });
+                } 
+              }) 
             }}
-            // onChange={(e) => {
-            //   // Cập nhật giá trị của postUpdate.message
-            //   setPostUpdate((prev) => {
-            //     return {
-            //       ...prev,
-            //       message: e.target.value,
-            //     };
-            //   });
-            // }}
           />
           
         <button
           onClick={() => {
-            setShowEditModal(false);
-            updatePosts(postUpdate.id, postUpdate.message);
-            // console.log("postUpdate.id, postUpdate.message: ", postUpdate.id, postUpdate.message)
+            setShowEditModal(false) 
+            updatePosts(postUpdate.id, postUpdate.message) 
+            
           }}
         >
           Cập nhật
         </button>
         </div>
       </div>
-    );
+    ) 
   }
-
-  const renderPosts = () => {
+ 
+  const renderPosts = useCallback(() => {
     return posts?.map((post, index) => {
       return (
         <>
@@ -137,10 +127,9 @@ const Listposts = () => {
                 onClick={() => {
                   setPostUpdate({
                     message: post.message,
-                    link: post.full_picture,
                     id: post.id,
-                  });
-                  setShowEditModal(!isShowEditModal);
+                  }) 
+                  setShowEditModal(!isShowEditModal) 
                 }}
               >
                 sửa
@@ -156,33 +145,34 @@ const Listposts = () => {
             </td>
           </tr>
         </>
-      );
-    });
-  };
+      ) 
+    }) 
+  })
+ 
   const onChangeMessage = (e) => {
-    setMessage(e.target.value);
-  };
+    setMessage(e.target.value) 
+  } 
   const onChangeLink = (e) => {
-    setLink(e.target.value);
-  };
+    setLink(e.target.value) 
+  } 
   const Addpost = () => {
     if (!link) {
       fetch(
         `https://graph.facebook.com/199179103271562/feed?method=post&message=${message}&access_token=${accessToken}`,
         { method: "POST" }
       ).then(() => {
-        console.log("Thêm thành công");
-      });
+        console.log("Thêm thành công") 
+      }) 
     } else {
       fetch(
         `https://graph.facebook.com/199179103271562/feed?method=post&message=${message}&link=${link}&access_token=${accessToken}`,
         { method: "POST" }
       ).then(() => {
-        console.log("Thêm thành công");
-      });
+        console.log("Thêm thành công") 
+      }) 
     }
-    window.location.reload();
-  };
+    window.location.reload() 
+  } 
   const deletePosts = (id) => {
     fetch(
       `https://graph.facebook.com/${id}?method=delete&access_token=${accessToken}`,
@@ -206,7 +196,7 @@ const Listposts = () => {
         }),
       })
     
-    window.location.reload();
+    window.location.reload() 
   }
 
   return (
@@ -241,12 +231,12 @@ const Listposts = () => {
                   viết mới
                 </span>
                 <span style={{ margin: "0 0 0 8" }}>
-                  <i className="fa fa-question" aria-hidden="true"></i>Q&amp;A
+                  <i className="fa fa-question" aria-hidden="true"></i>Q&amp A
                 </span>
               </h2>
               <div className="content">
                 <img
-                  src={`https://scontent.fhan5-1.fna.fbcdn.net/v/t1.0-9/25151913_321908118292571_6831565702998697270_n.jpg?oh=d00c42db327fdd5245520a08cabd0822&amp;oe=5ABB1764`}
+                  src={`https://scontent.fhan5-1.fna.fbcdn.net/v/t1.0-9/25151913_321908118292571_6831565702998697270_n.jpg?oh=d00c42db327fdd5245520a08cabd0822&amp oe=5ABB1764`}
                 />
                 <form target="blank">
                   <input
@@ -315,7 +305,7 @@ const Listposts = () => {
         </div>
       </main>
     </>
-  );
-};
+  ) 
+} 
 
-export default Listposts;
+export default Listposts 
