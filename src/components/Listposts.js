@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react" 
 import { Link } from "react-router-dom" 
 
+import EditModal from "./EditModal"
+
 const Listposts = () => {
   const [posts, setPosts] = useState() 
   const [message, setMessage] = useState() 
@@ -21,61 +23,14 @@ const Listposts = () => {
       }) 
   }, []) 
   const [isShowEditModal, setShowEditModal] = useState(false) 
-  const [postUpdate, setPostUpdate] = useState({
-    message: "",
-    id: "",
-  }) 
+  const [postIndex, setPostIndex] = useState(0) 
 
-  const EditModal = () => {
-    console.log("re-render")
-    return (
-      <div
-        className="editModal"
-        onClick={() => {
-          setShowEditModal(false) 
-        }}
-      >
-        <div
-          className="editModal__content"
-          onClick={(e) => {
-            e.stopPropagation()
-          }}
-        >
-          <p>Content</p>
-          <input
-            type="text"
-            value={postUpdate.message}
-            autoFocus
-            onChange={(e) => {
-              // Cập nhật giá trị của postUpdate.message
-              setPostUpdate((prev) => {
-                return {
-                  ...prev,
-                  message: e.target.value,
-                } 
-              }) 
-            }}
-          />
-          
-        <button
-          onClick={() => {
-            setShowEditModal(false) 
-            updatePosts(postUpdate.id, postUpdate.message) 
-            
-          }}
-        >
-          Cập nhật
-        </button>
-        </div>
-      </div>
-    ) 
-  }
  
   const renderPosts = useCallback(() => {
     return posts?.map((post, index) => {
       return (
         <>
-          {isShowEditModal && <EditModal />}
+          {isShowEditModal && <EditModal post={posts[postIndex]} setShowEditModal={setShowEditModal}/>}
           <tr key={index}>
             <td>
               <Link
@@ -125,10 +80,7 @@ const Listposts = () => {
               <button
                 style={{ border: 1 }}
                 onClick={() => {
-                  setPostUpdate({
-                    message: post.message,
-                    id: post.id,
-                  }) 
+                  setPostIndex(index)
                   setShowEditModal(!isShowEditModal) 
                 }}
               >
